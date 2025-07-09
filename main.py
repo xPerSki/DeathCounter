@@ -30,7 +30,7 @@ class App(CTk):
         self.title("p e r s k i _ _")
         self.geometry("400x210")
         self.resizable(False, False)
-        self.iconbitmap("twitch.ico")
+        self.iconbitmap("stuff/twitch.ico")
         self._set_appearance_mode("dark")
 
         self.columnconfigure(0, weight=1)
