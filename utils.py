@@ -24,7 +24,13 @@ def death_count(increment: bool = True) -> None:
     try:
         with open('deaths.txt', 'r+') as file:
             count = int(file.read().strip())
-            count += 1 if increment else -1
+            if increment:
+                count += 1
+                print("Death count +1, total:", count)
+            else:
+                count = max(0, count - 1)  # It will always be >=0
+                print("Death count -1, total:", count)
+
             file.seek(0)
             file.write(str(count))
             file.truncate()
