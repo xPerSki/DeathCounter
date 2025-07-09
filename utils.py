@@ -1,7 +1,7 @@
 import json
 
 
-def save_action_bind(action: str, value: str) -> None:
+def save_setting(setting: str, value: str) -> None:
     with open('settings.json', 'r+') as file:
         settings = json.load(file)
         settings[action] = value
@@ -10,7 +10,7 @@ def save_action_bind(action: str, value: str) -> None:
         file.truncate()
 
 
-def get_action_bind(action: str) -> str:
+def get_setting(action: str) -> str:
     with open('settings.json', 'r') as file:
         settings = json.load(file)
         return settings.get(action, "")

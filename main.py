@@ -1,5 +1,6 @@
 from customtkinter import *
-from time import sleep
+import threading
+import time
 import keyboard
 import utils
 import detect
@@ -21,8 +22,8 @@ class App(CTk):
     def __init__(self):
         super().__init__()
 
-        self.death_counter_increment = utils.get_action_bind("death_counter_increment")
-        self.death_counter_decrement = utils.get_action_bind("death_counter_decrement")
+        self.death_counter_increment = utils.get_setting("death_counter_increment")
+        self.death_counter_decrement = utils.get_setting("death_counter_decrement")
         self.font = ("Consolas", 16)
 
         self.title("p e r s k i _ _")
@@ -55,6 +56,9 @@ class App(CTk):
         self.decrement_button.grid(row=2, column=1, pady=10, padx=10, sticky="w")
 
         # auto detect death
+        self.detection_thread = None
+        self.detection_running = False
+
         self.auto_detect_box = CTkCheckBox(self, text="Auto detect death", font=self.font, command=self._flip_toggle)
         self.auto_detect_box.configure(
             fg_color="#4c1d99",
@@ -63,17 +67,39 @@ class App(CTk):
             border_width=2,
         )
         self.auto_detect_box.grid(row=3, column=0, columnspan=2, pady=(10, 0), padx=10, sticky="nsew")
-        self.auto_detect_tooltip = CTkLabel(self, text="*To turn off, restart the app", font=("Consolas", 12))
-        self.auto_detect_tooltip.grid(row=4, column=0, padx=10)
 
     def _flip_toggle(self):
-        self.auto_detect_box.configure(state="off")
-        death_screen = utils.get_action_bind("death_screen_image")
-        while True:
-            if detect.detect_death_screen(death_screen):
-                utils.death_count(True)
-                print("Death detected!")
-                sleep(0.77)
+        if self.auto_detect_box.get():
+            self.start_detection()
+        else:
+            self.stop_detection()
+
+    def start_detection(self):
+        if self.detection_thread and self.detection_thread.is_alive():
+            return
+
+        self.detection_running = True
+        self.detection_thread = threading.Thread(target=self._detection_loop)
+        self.detection_thread.start()
+
+    def stop_detection(self):
+        self.detection_running = False
+        if self.detection_thread:
+            self.detection_thread.join(timeout=1)
+
+    def _detection_loop(self):
+        death_screen = utils.get_setting("death_screen")
+        while self.detection_running:
+            try:
+                if detect.detect_death_screen(death_screen):
+                    utils.death_count(True)
+                    print("Death detected!")
+                    time.sleep(10)  # sleep after detection
+                else:
+                    time.sleep(1)  # sleep after each check
+            except Exception as e:
+                print(f"Error during detection: {e}")
+                time.sleep(10)
 
     def create_bind_window(self, bind):
         dialog = CTkInputDialog(title="Bind Key", text="Press a key to bind:")
@@ -85,20 +111,24 @@ class App(CTk):
         self.change_bind(bind, key)
 
     def change_bind(self, bind, key):
-        utils.save_action_bind(bind, key.upper())
+        utils.save_setting(bind, key.upper())
         self.reload_binds()
 
     def reload_binds(self):
-        self.death_counter_increment = utils.get_action_bind("death_counter_increment")
-        self.death_counter_decrement = utils.get_action_bind("death_counter_decrement")
+        self.death_counter_increment = utils.get_setting("death_counter_increment")
+        self.death_counter_decrement = utils.get_setting("death_counter_decrement")
         self.increment_label.configure(text=f"+1 bound to '{self.death_counter_increment}'")
         self.decrement_label.configure(text=f"-1 bound to '{self.death_counter_decrement}'")
+
+    def destroy(self):
+        self.stop_detection()
+        super().destroy()
 
 
 class KeyBinds:
     def __init__(self):
-        self.death_counter_increment = utils.get_action_bind("death_counter_increment")
-        self.death_counter_decrement = utils.get_action_bind("death_counter_decrement")
+        self.death_counter_increment = utils.get_setting("death_counter_increment")
+        self.death_counter_decrement = utils.get_setting("death_counter_decrement")
 
         keyboard.add_hotkey(self.death_counter_increment, utils.death_count, args=(True,))
         keyboard.add_hotkey(self.death_counter_decrement, utils.death_count, args=(False,))
