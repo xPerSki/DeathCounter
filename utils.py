@@ -2,7 +2,7 @@ import json
 
 
 def save_setting(setting: str, value: str) -> None:
-    with open('settings.json', 'r+') as file:
+    with open('stuff/settings.json', 'r+') as file:
         settings = json.load(file)
         settings[setting] = value
         file.seek(0)
@@ -11,7 +11,7 @@ def save_setting(setting: str, value: str) -> None:
 
 
 def get_setting(setting: str) -> str:
-    with open('settings.json', 'r') as file:
+    with open('stuff/settings.json', 'r') as file:
         settings = json.load(file)
         return settings.get(setting, "")
 
