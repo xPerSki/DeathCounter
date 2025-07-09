@@ -4,16 +4,16 @@ import json
 def save_setting(setting: str, value: str) -> None:
     with open('settings.json', 'r+') as file:
         settings = json.load(file)
-        settings[action] = value
+        settings[setting] = value
         file.seek(0)
         json.dump(settings, file, indent=4)
         file.truncate()
 
 
-def get_setting(action: str) -> str:
+def get_setting(setting: str) -> str:
     with open('settings.json', 'r') as file:
         settings = json.load(file)
-        return settings.get(action, "")
+        return settings.get(setting, "")
 
 
 def death_count(increment: bool = True) -> None:

@@ -1,5 +1,5 @@
 {
-    "death_counter_increment": "K",
-    "death_counter_decrement": "L",
+    "death_counter_increment": ".",
+    "death_counter_decrement": ",",
     "death_screen": "death_screen.png"
 }

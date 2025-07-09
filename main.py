@@ -24,6 +24,7 @@ class App(CTk):
 
         self.death_counter_increment = utils.get_setting("death_counter_increment")
         self.death_counter_decrement = utils.get_setting("death_counter_decrement")
+        self._reload_hotkeys()
         self.font = ("Consolas", 16)
 
         self.title("p e r s k i _ _")
@@ -94,7 +95,7 @@ class App(CTk):
                 if detect.detect_death_screen(death_screen):
                     utils.death_count(True)
                     print("Death detected!")
-                    time.sleep(10)  # sleep after detection
+                    time.sleep(15)  # sleep after detection
                 else:
                     time.sleep(1)  # sleep after each check
             except Exception as e:
@@ -119,22 +120,21 @@ class App(CTk):
         self.death_counter_decrement = utils.get_setting("death_counter_decrement")
         self.increment_label.configure(text=f"+1 bound to '{self.death_counter_increment}'")
         self.decrement_label.configure(text=f"-1 bound to '{self.death_counter_decrement}'")
+        self._reload_hotkeys()
+
+    def _reload_hotkeys(self):
+        death_counter_increment = self.death_counter_increment
+        death_counter_decrement = self.death_counter_decrement
+        if keyboard._hotkeys:
+            keyboard.unhook_all_hotkeys()
+        keyboard.add_hotkey(death_counter_increment, utils.death_count, args=(True,))
+        keyboard.add_hotkey(death_counter_decrement, utils.death_count, args=(False,))
 
     def destroy(self):
         self.stop_detection()
         super().destroy()
 
 
-class KeyBinds:
-    def __init__(self):
-        self.death_counter_increment = utils.get_setting("death_counter_increment")
-        self.death_counter_decrement = utils.get_setting("death_counter_decrement")
-
-        keyboard.add_hotkey(self.death_counter_increment, utils.death_count, args=(True,))
-        keyboard.add_hotkey(self.death_counter_decrement, utils.death_count, args=(False,))
-
-
 if __name__ == "__main__":
     app = App()
-    key_binds = KeyBinds()
     app.mainloop()
