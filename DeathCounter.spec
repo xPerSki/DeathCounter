@@ -19,6 +19,7 @@ a = Analysis(
         'tkinter.filedialog',
         'tkinter.messagebox',
         'tkinter.simpledialog',
+        'tkinter.font',
         'customtkinter',
         'utils',
         'detect'
@@ -34,7 +35,6 @@ a = Analysis(
         'tkinter.test',
         'test',
         'unittest',
-        'email',
         'multiprocessing',
         'sqlite3',
         'distutils'
