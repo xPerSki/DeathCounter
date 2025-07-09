@@ -59,6 +59,9 @@ class App(CTk):
         # auto detect death
         self.detection_thread = None
         self.detection_running = False
+        self.sleep_after_death = float(utils.get_setting("sleep_after_death"))
+        self.sleep_interval = float(utils.get_setting("sleep_interval"))
+        self.sleep_after_error = float(utils.get_setting("sleep_after_error"))
 
         self.auto_detect_box = CTkCheckBox(self, text="Auto detect death", font=self.font, command=self._flip_toggle)
         self.auto_detect_box.configure(
@@ -71,6 +74,7 @@ class App(CTk):
 
     def _flip_toggle(self):
         if self.auto_detect_box.get():
+
             self.start_detection()
         else:
             self.stop_detection()
@@ -95,12 +99,12 @@ class App(CTk):
                 if detect.detect_death_screen(death_screen):
                     utils.death_count(True)
                     print("Death detected!")
-                    time.sleep(15)  # sleep after detection
+                    time.sleep(self.sleep_after_death)  # sleep after detection
                 else:
-                    time.sleep(1)  # sleep after each check
+                    time.sleep(self.sleep_interval)  # sleep after each check
             except Exception as e:
                 print(f"Error during detection: {e}")
-                time.sleep(10)
+                time.sleep(self.sleep_after_error)
 
     def create_bind_window(self, bind):
         dialog = CTkInputDialog(title="Bind Key", text="Press a key to bind:")

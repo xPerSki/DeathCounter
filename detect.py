@@ -25,5 +25,6 @@ def detect_death_screen(image_path: str) -> bool:
     result = cv.matchTemplate(frame, death_screen, cv.TM_CCOEFF_NORMED)
     threshold = 0.7
     loc = np.where(result >= threshold)
+    print('e', end='')
 
     return len(loc[0]) > 0

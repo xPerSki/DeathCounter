@@ -1,5 +1,8 @@
 {
     "death_counter_increment": ".",
     "death_counter_decrement": ",",
-    "death_screen": "stuff/death_screen.png"
+    "death_screen": "stuff/death_screen.png",
+    "sleep_after_death": 12,
+    "sleep_interval": 0.33,
+    "sleep_after_error": 10
 }
