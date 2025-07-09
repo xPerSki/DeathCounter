@@ -3,6 +3,7 @@
     "death_counter_decrement": ",",
     "death_screen": "stuff/death_screen.png",
     "sleep_after_death": 12,
+    "sleep_after_error": 10,
     "sleep_interval": 0.33,
-    "sleep_after_error": 10
+    "death_sound_effect": null
 }

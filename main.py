@@ -4,6 +4,7 @@ import time
 import keyboard
 import utils
 import detect
+import pygame
 
 
 class CustomButton(CTkButton):
@@ -62,6 +63,10 @@ class App(CTk):
         self.sleep_after_death = float(utils.get_setting("sleep_after_death"))
         self.sleep_interval = float(utils.get_setting("sleep_interval"))
         self.sleep_after_error = float(utils.get_setting("sleep_after_error"))
+        self.death_sound_effect = utils.get_setting("death_sound_effect")
+        if self.death_sound_effect:
+            pygame.mixer.init()
+            pygame.mixer.music.load(self.death_sound_effect)
 
         self.auto_detect_box = CTkCheckBox(self, text="Auto detect death", font=self.font, command=self._flip_toggle)
         self.auto_detect_box.configure(
@@ -99,9 +104,11 @@ class App(CTk):
                 if detect.detect_death_screen(death_screen):
                     utils.death_count(True)
                     print("Death detected!")
-                    time.sleep(self.sleep_after_death)  # sleep after detection
+                    if self.death_sound_effect:
+                        pygame.mixer.music.play()
+                    time.sleep(self.sleep_after_death)  # sleep after death
                 else:
-                    time.sleep(self.sleep_interval)  # sleep after each check
+                    time.sleep(self.sleep_interval)  # sleep interval
             except Exception as e:
                 print(f"Error during detection: {e}")
                 time.sleep(self.sleep_after_error)
