@@ -17,11 +17,6 @@ def detect_death_screen(image_path: str) -> bool:
     screenshot = pyautogui.screenshot()
     frame = cv.cvtColor(np.array(screenshot), cv.COLOR_RGB2GRAY)
 
-    if frame.shape[0] > 1080:  # >1080p
-        scale = 0.5
-        frame = cv.resize(frame, None, fx=scale, fy=scale)
-        death_screen = cv.resize(death_screen, None, fx=scale, fy=scale)
-
     result = cv.matchTemplate(frame, death_screen, cv.TM_CCOEFF_NORMED)
     threshold = 0.7
     loc = np.where(result >= threshold)
